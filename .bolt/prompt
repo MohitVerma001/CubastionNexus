@@ -1,0 +1,386 @@
+# Bolt.new Knowledge / Instruction Points — Cubastion Nexus
+
+## Product Knowledge
+
+* This product is a multi-tenant enterprise support portal
+* Built for Cubastion Consulting
+* Japanese enterprise customers will use this platform
+* Customers raise and track support tickets
+* Agents manage and resolve tickets
+* Admins manage organizations, users, SLA, and audit logs
+* Similar to Zendesk/Freshdesk but customized for Cubastion
+
+---
+
+# UI/UX Knowledge
+
+## Overall UI Feel
+
+The UI must feel:
+
+* Premium SaaS
+* Enterprise-grade
+* Calm
+* Professional
+* Japanese-corporate friendly
+* Clean and spacious
+* Trustworthy
+* Minimal but modern
+
+DO NOT:
+
+* Create startup flashy UI
+* Use gaming styles
+* Use neon colors
+* Use dark mode
+* Use excessive gradients
+* Use heavy animations
+
+---
+
+# Branding Knowledge
+
+## Primary Brand Color
+
+Teal:
+#01516A
+
+## Accent Color
+
+Orange:
+#F9A41E
+
+## Neutral Colors
+
+* Grey: #999999
+* Light Grey: #EBEBEB
+* Dark Grey: #707070
+* White: #FFFFFF
+
+## Important Branding Rules
+
+* Teal is the dominant UI color
+* Orange is only for highlights/warnings
+* White and light grey should dominate surfaces
+* No black backgrounds
+* Use soft enterprise shadows
+* Use soft borders
+
+---
+
+# Layout Knowledge
+
+## Application Layout
+
+* Left sidebar navigation
+* Top header
+* Spacious content area
+* Dashboard/card-based structure
+
+## Sidebar
+
+* Dark teal background
+* Minimal icons
+* Professional spacing
+* Active state highlighted in teal
+* Collapsible on mobile
+
+## Header
+
+* White background
+* Minimal border/shadow
+* Search bar
+* Notification icon
+* User profile menu
+
+---
+
+# Table Knowledge
+
+Tables are the most important UI component.
+
+Requirements:
+
+* Professional enterprise table design
+* Spacious rows
+* Soft hover effects
+* Sticky headers
+* Search/filter support
+* Pagination support
+* Rounded container
+* Minimal borders
+
+DO NOT:
+
+* Create cramped tables
+* Use legacy dense enterprise table styles
+
+---
+
+# Form Knowledge
+
+Forms should:
+
+* Feel calm and enterprise
+* Use large readable inputs
+* Have spacious vertical spacing
+* Use teal focus states
+* Be highly readable for Japanese users
+
+---
+
+# Component Knowledge
+
+## Reusable Component Strategy
+
+Build reusable components ONLY.
+
+Must reuse:
+
+* DataTable
+* StatusBadge
+* PriorityBadge
+* Modal
+* Form components
+* PageHeader
+* SearchFilterBar
+* Dashboard cards
+
+DO NOT create duplicate versions.
+
+---
+
+# Status Knowledge
+
+## Ticket Status Types
+
+* OPEN
+* IN_PROGRESS
+* PENDING_CUSTOMER
+* CLOSED
+* ESCALATED
+
+## Status Badge Rules
+
+OPEN:
+
+* Light teal background
+
+IN_PROGRESS:
+
+* Medium teal background
+
+PENDING_CUSTOMER:
+
+* Light orange/yellow background
+
+CLOSED:
+
+* Soft green background
+
+ESCALATED:
+
+* Soft red background
+
+Badges must:
+
+* Be rounded pills
+* Minimal
+* Professional
+* Easy to scan
+
+---
+
+# Priority Knowledge
+
+## Priority Types
+
+* P1 = Critical
+* P2 = High
+* P3 = Normal
+
+## Priority Styling
+
+P1:
+
+* Orange dark emphasis
+
+P2:
+
+* Orange
+
+P3:
+
+* Grey
+
+Must remain subtle and enterprise-friendly.
+
+---
+
+# Dashboard Knowledge
+
+## Customer Dashboard
+
+Purpose:
+
+* Show customer tickets only
+* Main focus = ticket tracking
+
+## Agent Dashboard
+
+Purpose:
+
+* Show all tickets
+* SLA visibility
+* Assignment workflow
+* Priority management
+
+## Admin Dashboard
+
+Purpose:
+
+* Organization management
+* User management
+* SLA configuration
+* Audit visibility
+
+---
+
+# Mobile Responsiveness Knowledge
+
+## Customer Portal
+
+Fully mobile responsive.
+
+## Agent/Admin
+
+Tablet + desktop optimized.
+
+Sidebar:
+
+* Collapsible on smaller screens.
+
+---
+
+# Typography Knowledge
+
+Typography should:
+
+* Feel modern enterprise
+* Use clean hierarchy
+* Avoid over-bold styling
+* Be readable in Japanese language layouts
+* Use spacious line height
+
+---
+
+# Design Philosophy
+
+The UI should feel like:
+
+* Zendesk
+* Atlassian
+* Linear
+* Notion
+* Modern Japanese enterprise systems
+
+Target feeling:
+“Professional, organized, trustworthy, and scalable.”
+
+---
+
+# Technical Knowledge
+
+## Frontend Stack
+
+* React JSX ONLY
+* Tailwind CSS
+* shadcn/ui
+* Reusable component architecture
+
+## Important
+
+DO NOT use:
+
+* TypeScript
+* Hardcoded backend logic
+* Mock APIs inside components
+* Random inconsistent styling
+
+---
+
+# Development Knowledge
+
+## Priority Order
+
+1. Layout system
+2. Reusable components
+3. Customer flow
+4. Agent flow
+5. Admin flow
+
+## Most Important Screens
+
+* Login
+* Ticket List
+* Ticket Detail
+* New Ticket
+* Agent Dashboard
+
+---
+
+# SaaS Design Knowledge
+
+The product should:
+
+* Scale visually for enterprise usage
+* Support large ticket tables
+* Feel operational and workflow-focused
+* Prioritize usability over decoration
+
+---
+
+# Visual Hierarchy Knowledge
+
+Important items:
+
+* Ticket Number
+* Status
+* Priority
+* SLA Warning
+* Assigned Agent
+
+These should stand out clearly.
+
+---
+
+# Animation Knowledge
+
+Animations should be:
+
+* Minimal
+* Soft
+* Professional
+
+Allowed:
+
+* Hover transitions
+* Modal fade
+* Button hover
+
+Avoid:
+
+* Large motion
+* Floating effects
+* Fancy transitions
+
+---
+
+# Final Goal
+
+The final product should look like a real enterprise SaaS platform that:
+
+* Japanese clients can trust
+* Cubastion can showcase professionally
+* Feels scalable and production-ready
+* Looks modern without being flashy
