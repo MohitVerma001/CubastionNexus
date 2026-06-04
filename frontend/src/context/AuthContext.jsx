@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import api, { setMemoryToken, clearMemoryToken } from '../services/api';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
