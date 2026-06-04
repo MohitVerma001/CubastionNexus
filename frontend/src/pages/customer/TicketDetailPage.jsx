@@ -1,38 +1,63 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, TriangleAlert as AlertTriangle, Tag, Calendar } from 'lucide-react';
-import { MOCK_TICKETS, MOCK_COMMENTS } from '../../utils/mockData';
+import { ArrowLeft, Tag, Calendar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import PageHeader from '../../components/shared/PageHeader';
+import { useToast } from '../../context/ToastContext';
+import useTicket from '../../hooks/useTicket';
+import { addComment } from '../../services/comments.service';
+import { uploadAttachment } from '../../services/tickets.service';
 import StatusBadge from '../../components/shared/StatusBadge';
 import PriorityBadge from '../../components/shared/PriorityBadge';
 import SLAIndicator from '../../components/shared/SLAIndicator';
 import TicketTimeline from '../../components/tickets/TicketTimeline';
 import CommentBox from '../../components/tickets/CommentBox';
-import ConfirmDialog from '../../components/shared/ConfirmDialog';
+import EscalateButton from '../../components/tickets/EscalateButton';
+import AttachmentUploader from '../../components/tickets/AttachmentUploader';
 import Button from '../../components/shared/Button';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import { formatDateTime } from '../../utils/dateUtils';
 
 export default function TicketDetailPage({ isAgent = false }) {
   const { id } = useParams();
   const { user } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
-  const ticket = MOCK_TICKETS.find(t => t.id === id) || MOCK_TICKETS[0];
-  const [comments, setComments] = useState(MOCK_COMMENTS);
-  const [showEscalate, setShowEscalate] = useState(false);
-  const [localStatus, setLocalStatus] = useState(ticket?.status);
-  const [localPriority, setLocalPriority] = useState(ticket?.priority);
+  const { ticket, comments, loading, error, refetch } = useTicket(id);
+
+  const [localStatus, setLocalStatus] = useState(null);
+  const [localPriority, setLocalPriority] = useState(null);
+
+  const displayStatus = localStatus ?? ticket?.status;
+  const displayPriority = localPriority ?? ticket?.priority;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <LoadingSpinner size="lg" label="Loading ticket..." />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="px-4 py-3 bg-[#FDE8E8] border border-[#F8AEAE] rounded-lg text-sm text-[#C81E1E]">
+        Failed to load ticket. Please go back and try again.
+      </div>
+    );
+  }
 
   if (!ticket) return <div className="text-center py-20 text-[#999]">Ticket not found.</div>;
 
   const handleComment = async ({ body, is_internal }) => {
-    setComments(prev => [...prev, {
-      id: `c-${Date.now()}`,
-      author: { name: user.name, role: user.role },
-      body, is_internal,
-      created_at: new Date().toISOString(),
-      source: 'portal',
-    }]);
+    await addComment(id, body, is_internal);
+    addToast('Your comment has been added.', 'success');
+    refetch();
+  };
+
+  const handleAttachment = async (files) => {
+    if (!files.length) return;
+    await Promise.all(files.map(f => uploadAttachment(id, f)));
+    refetch();
   };
 
   const basePath = isAgent ? '/agent/tickets' : '/customer/tickets';
@@ -56,28 +81,24 @@ export default function TicketDetailPage({ isAgent = false }) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span className="font-mono text-xs font-semibold text-[#01516A] bg-[#EBF5FA] px-2.5 py-1 rounded-md">{ticket.ticket_number}</span>
-              <StatusBadge status={localStatus} />
-              <PriorityBadge priority={localPriority} />
+              <StatusBadge status={displayStatus} />
+              <PriorityBadge priority={displayPriority} />
             </div>
             <h1 className="text-xl font-semibold text-[#0F0F0F] leading-snug">{ticket.subject}</h1>
             <p className="text-sm text-[#707070] mt-1">{ticket.organisation?.name}</p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {ticket.status !== 'escalated' && ticket.status !== 'closed' && (
-              <Button
-                variant="danger"
-                icon={AlertTriangle}
-                size="sm"
-                onClick={() => setShowEscalate(true)}
-              >
-                Escalate
-              </Button>
-            )}
+            <EscalateButton
+              ticketId={id}
+              currentPriority={displayPriority}
+              status={displayStatus}
+              onSuccess={refetch}
+            />
             {isAgent && (
               <div className="flex items-center gap-2">
                 <select
-                  value={localStatus}
+                  value={displayStatus}
                   onChange={e => setLocalStatus(e.target.value)}
                   className="text-sm border border-[#E0E2E6] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white text-[#0F0F0F]"
                 >
@@ -88,7 +109,7 @@ export default function TicketDetailPage({ isAgent = false }) {
                   <option value="escalated">Escalated</option>
                 </select>
                 <select
-                  value={localPriority}
+                  value={displayPriority}
                   onChange={e => setLocalPriority(e.target.value)}
                   className="text-sm border border-[#E0E2E6] rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white text-[#0F0F0F]"
                 >
@@ -148,6 +169,10 @@ export default function TicketDetailPage({ isAgent = false }) {
             <h2 className="text-sm font-semibold text-[#0F0F0F] mb-3">{isAgent ? 'Reply or Add Note' : 'Add Reply'}</h2>
             <CommentBox onSubmit={handleComment} showInternalToggle={isAgent} />
           </div>
+          <div className="bg-white rounded-xl border border-[#E8EAED] p-5" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+            <h2 className="text-sm font-semibold text-[#0F0F0F] mb-3">Attachments</h2>
+            <AttachmentUploader onFilesChange={handleAttachment} />
+          </div>
         </div>
 
         {/* Sidebar info */}
@@ -157,11 +182,11 @@ export default function TicketDetailPage({ isAgent = false }) {
             <dl className="space-y-3">
               <div>
                 <dt className="text-xs text-[#999] mb-0.5">Status</dt>
-                <dd><StatusBadge status={localStatus} /></dd>
+                <dd><StatusBadge status={displayStatus} /></dd>
               </div>
               <div>
                 <dt className="text-xs text-[#999] mb-0.5">Priority</dt>
-                <dd><PriorityBadge priority={localPriority} /></dd>
+                <dd><PriorityBadge priority={displayPriority} /></dd>
               </div>
               <div>
                 <dt className="text-xs text-[#999] mb-0.5">Organization</dt>
@@ -174,7 +199,7 @@ export default function TicketDetailPage({ isAgent = false }) {
             </dl>
           </div>
 
-          {localStatus === 'closed' && (
+          {displayStatus === 'closed' && (
             <div className="bg-[#EBF5FA] rounded-xl border border-[#D3ECFB] p-4">
               <p className="text-xs font-medium text-[#01516A] mb-1">Ticket Closed</p>
               <p className="text-xs text-[#609CB8] leading-relaxed">You can reopen this ticket by adding a reply within 5 business days.</p>
@@ -182,16 +207,6 @@ export default function TicketDetailPage({ isAgent = false }) {
           )}
         </div>
       </div>
-
-      <ConfirmDialog
-        isOpen={showEscalate}
-        onClose={() => setShowEscalate(false)}
-        onConfirm={() => setLocalStatus('escalated')}
-        title="Escalate Ticket"
-        message="Escalating this ticket will set it to P1 Critical priority and immediately notify the support team. Are you sure you want to escalate?"
-        confirmLabel="Escalate Now"
-        danger={true}
-      />
     </div>
   );
 }

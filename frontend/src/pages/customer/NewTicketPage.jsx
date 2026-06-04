@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Paperclip, X, Upload } from 'lucide-react';
-import { TICKET_CATEGORIES } from '../../utils/constants';
+import { ArrowLeft } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { TICKET_CATEGORIES, PRIORITY_LABELS } from '../../utils/constants';
+import { validateTicketForm } from '../../utils/validators';
+import { createTicket } from '../../services/tickets.service';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import PageHeader from '../../components/shared/PageHeader';
 import Button from '../../components/shared/Button';
+import AttachmentUploader from '../../components/tickets/AttachmentUploader';
 
 const FIELD = ({ label, required, children, hint }) => (
   <div>
@@ -18,35 +23,36 @@ const FIELD = ({ label, required, children, hint }) => (
 
 export default function NewTicketPage() {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ subject: '', category: '', priority: 'P3', description: '' });
   const [files, setFiles] = useState([]);
   const [submitting, setSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState('');
 
-  const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    defaultValues: { subject: '', category: '', priority: 'P3', description: '' },
+  });
 
-  const validate = () => {
-    const e = {};
-    if (!form.subject.trim()) e.subject = 'Subject is required.';
-    if (!form.category) e.category = 'Please select a category.';
-    if (!form.description.trim()) e.description = 'Please describe the issue.';
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
+  const subjectValue = watch('subject');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+  const onSubmit = async (data) => {
+    const { valid, errors: validationErrors } = validateTicketForm(data);
+    if (!valid) {
+      // react-hook-form already handles field errors via register; surface generic fallback
+      setApiError(Object.values(validationErrors)[0] || 'Please correct the errors above.');
+      return;
+    }
+    setApiError('');
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 800));
-    setSubmitting(false);
-    navigate('/customer');
-  };
-
-  const handleFile = (e) => {
-    const newFiles = Array.from(e.target.files || []);
-    setFiles(prev => [...prev, ...newFiles]);
+    try {
+      await createTicket({ ...data, attachments: files });
+      addToast('Your ticket has been submitted successfully.', 'success');
+      navigate('/customer');
+    } catch (err) {
+      setApiError(err?.response?.data?.message || err?.message || 'Failed to submit ticket. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -61,7 +67,13 @@ export default function NewTicketPage() {
         breadcrumbs={['Portal', 'New Ticket']}
       />
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {apiError && (
+          <div className="mb-4 px-4 py-3 bg-[#FDE8E8] border border-[#F8AEAE] rounded-lg text-sm text-[#C81E1E]">
+            {apiError}
+          </div>
+        )}
+
         <div className="bg-white rounded-xl border border-[#E8EAED] p-6 space-y-5" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           {/* Organization (read-only for customers) */}
           <FIELD label="Organization">
@@ -73,74 +85,51 @@ export default function NewTicketPage() {
           <FIELD label="Subject" required>
             <input
               type="text"
-              value={form.subject}
-              onChange={e => update('subject', e.target.value)}
               placeholder="Brief summary of the issue"
               maxLength={120}
+              {...register('subject', { required: 'Subject is required.', maxLength: { value: 120, message: 'Subject cannot exceed 120 characters.' } })}
               className={`w-full px-3.5 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white text-[#0F0F0F] placeholder-[#999] transition-colors ${errors.subject ? 'border-[#C81E1E]' : 'border-[#E0E2E6]'}`}
             />
-            {errors.subject && <p className="text-xs text-[#C81E1E] mt-1">{errors.subject}</p>}
-            <p className="text-xs text-[#999] mt-1">{form.subject.length}/120</p>
+            {errors.subject && <p className="text-xs text-[#C81E1E] mt-1">{errors.subject.message}</p>}
+            <p className="text-xs text-[#999] mt-1">{(subjectValue || '').length}/120</p>
           </FIELD>
 
           <div className="grid grid-cols-2 gap-4">
             <FIELD label="Category" required>
               <select
-                value={form.category}
-                onChange={e => update('category', e.target.value)}
+                {...register('category', { required: 'Category is required.' })}
                 className={`w-full px-3.5 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white text-[#0F0F0F] transition-colors ${errors.category ? 'border-[#C81E1E]' : 'border-[#E0E2E6]'}`}
               >
                 <option value="">Select category</option>
                 {TICKET_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
-              {errors.category && <p className="text-xs text-[#C81E1E] mt-1">{errors.category}</p>}
+              {errors.category && <p className="text-xs text-[#C81E1E] mt-1">{errors.category.message}</p>}
             </FIELD>
 
             <FIELD label="Priority" hint="P1 = Critical business impact">
               <select
-                value={form.priority}
-                onChange={e => update('priority', e.target.value)}
+                {...register('priority')}
                 className="w-full px-3.5 py-2.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white text-[#0F0F0F] transition-colors"
               >
-                <option value="P3">P3 — Normal</option>
-                <option value="P2">P2 — High</option>
-                <option value="P1">P1 — Critical</option>
+                <option value="P3">{PRIORITY_LABELS.P3}</option>
+                <option value="P2">{PRIORITY_LABELS.P2}</option>
+                <option value="P1">{PRIORITY_LABELS.P1}</option>
               </select>
             </FIELD>
           </div>
 
           <FIELD label="Description" required>
             <textarea
-              value={form.description}
-              onChange={e => update('description', e.target.value)}
               rows={6}
               placeholder="Please provide a detailed description of the issue, including steps to reproduce, error messages, and business impact."
+              {...register('description', { required: 'Description is required.', maxLength: { value: 2000, message: 'Description cannot exceed 2000 characters.' } })}
               className={`w-full px-3.5 py-2.5 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white text-[#0F0F0F] placeholder-[#999] resize-none transition-colors ${errors.description ? 'border-[#C81E1E]' : 'border-[#E0E2E6]'}`}
             />
-            {errors.description && <p className="text-xs text-[#C81E1E] mt-1">{errors.description}</p>}
+            {errors.description && <p className="text-xs text-[#C81E1E] mt-1">{errors.description.message}</p>}
           </FIELD>
 
-          {/* Attachments */}
           <FIELD label="Attachments" hint="Max 10MB per file. PDF, images, text, ZIP supported.">
-            <label className="flex flex-col items-center justify-center gap-2 px-6 py-5 border-2 border-dashed border-[#D3ECFB] rounded-xl hover:border-[#01516A] cursor-pointer transition-colors bg-[#F9FDFF] hover:bg-[#EBF5FA]">
-              <Upload className="w-5 h-5 text-[#609CB8]" />
-              <span className="text-sm text-[#609CB8] font-medium">Click to attach files</span>
-              <input type="file" multiple className="hidden" onChange={handleFile} />
-            </label>
-            {files.length > 0 && (
-              <div className="mt-2 space-y-1.5">
-                {files.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[#F5F6F8] rounded-lg">
-                    <Paperclip className="w-3.5 h-3.5 text-[#999]" />
-                    <span className="text-xs text-[#5C5C5C] flex-1 truncate">{f.name}</span>
-                    <span className="text-xs text-[#999]">{(f.size / 1024).toFixed(0)}KB</span>
-                    <button type="button" onClick={() => setFiles(prev => prev.filter((_, j) => j !== i))} className="text-[#999] hover:text-[#C81E1E] transition-colors">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+            <AttachmentUploader onFilesChange={setFiles} disabled={submitting} />
           </FIELD>
         </div>
 

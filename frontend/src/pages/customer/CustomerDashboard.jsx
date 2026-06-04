@@ -1,7 +1,7 @@
 import { Ticket, Clock, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { MOCK_TICKETS } from '../../utils/mockData';
 import { useAuth } from '../../context/AuthContext';
+import useTickets from '../../hooks/useTickets';
 import PageHeader from '../../components/shared/PageHeader';
 import StatCard from '../../components/shared/StatCard';
 import TicketTable from '../../components/tickets/TicketTable';
@@ -10,7 +10,7 @@ import Button from '../../components/shared/Button';
 export default function CustomerDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const tickets = MOCK_TICKETS.filter(t => t.organisation?.name === user?.organisation?.name);
+  const { tickets, loading, error } = useTickets();
 
   const stats = {
     open: tickets.filter(t => t.status === 'open' || t.status === 'in_progress' || t.status === 'escalated').length,
@@ -39,7 +39,13 @@ export default function CustomerDashboard() {
         <StatCard label="Resolved" value={stats.closed} icon={CheckCircle} variant="success" />
       </div>
 
-      <TicketTable tickets={tickets} loading={false} showOrg={false} basePath="/customer/tickets" />
+      {error ? (
+        <div className="px-4 py-3 bg-[#FDE8E8] border border-[#F8AEAE] rounded-lg text-sm text-[#C81E1E]">
+          Failed to load tickets. Please refresh the page.
+        </div>
+      ) : (
+        <TicketTable tickets={tickets} loading={loading} showOrg={false} basePath="/customer/tickets" />
+      )}
     </div>
   );
 }
