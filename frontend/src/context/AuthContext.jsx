@@ -1,60 +1,83 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import api, { setMemoryToken, clearMemoryToken } from '../services/api';
+import LoadingSpinner from '../components/shared/LoadingSpinner';
 
 const AuthContext = createContext(null);
 
-// Mock users for UI demonstration
-const MOCK_USERS = {
-  customer: {
-    id: 'u-001',
-    name: 'Tanaka Hiroshi',
-    email: 'tanaka@fujikura.co.jp',
-    role: 'customer',
-    organisation: { id: 'org-001', name: 'Fujikura Ltd.' },
-    avatar: null,
-  },
-  agent: {
-    id: 'u-002',
-    name: 'Yamamoto Kenji',
-    email: 'yamamoto@cubastion.com',
-    role: 'agent',
-    organisation: null,
-    avatar: null,
-  },
-  admin: {
-    id: 'u-003',
-    name: 'Suzuki Akiko',
-    email: 'suzuki@cubastion.com',
-    role: 'admin',
-    organisation: null,
-    avatar: null,
-  },
-};
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [mustChangePassword, setMustChangePassword] = useState(false);
 
-  const login = (email, password) => {
-    if (email.includes('fujikura') || email.includes('customer')) {
-      setUser(MOCK_USERS.customer);
-      return { role: 'customer' };
+  // Fetch current user on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await api.get('/auth/me');
+        setUser(response.user);
+        setMemoryToken(response.token);
+        if (!response.user.password_changed_at) {
+          setMustChangePassword(true);
+        }
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const login = async (email, password) => {
+    const response = await api.post('/auth/login', { email, password });
+    setMemoryToken(response.token);
+    setUser(response.user);
+    if (!response.user.password_changed_at) {
+      setMustChangePassword(true);
     }
-    if (email.includes('admin')) {
-      setUser(MOCK_USERS.admin);
-      return { role: 'admin' };
-    }
-    setUser(MOCK_USERS.agent);
-    return { role: 'agent' };
+    return response;
   };
 
-  const logout = () => setUser(null);
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } finally {
+      clearMemoryToken();
+      setUser(null);
+      setMustChangePassword(false);
+    }
+  };
 
-  return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const markPasswordChanged = () => {
+    setMustChangePassword(false);
+    setUser(prev => ({ ...prev, password_changed_at: new Date().toISOString() }));
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#F9FAFB]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  const value = {
+    user,
+    loading,
+    mustChangePassword,
+    login,
+    logout,
+    markPasswordChanged,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
 }

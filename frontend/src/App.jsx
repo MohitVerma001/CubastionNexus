@@ -6,6 +6,7 @@ import AuthLayout from './layouts/AuthLayout';
 import AppLayout from './layouts/AppLayout';
 
 import LoginPage from './pages/auth/LoginPage';
+import ChangePasswordPage from './pages/auth/ChangePasswordPage';
 import CustomerDashboard from './pages/customer/CustomerDashboard';
 import CustomerTicketDetail from './pages/customer/TicketDetailPage';
 import NewTicketPage from './pages/customer/NewTicketPage';
@@ -21,8 +22,9 @@ import AuditLogPage from './pages/admin/AuditLogPage';
 import SettingsPage from './pages/admin/SettingsPage';
 
 function RequireAuth({ children, allowedRoles }) {
-  const { user } = useAuth();
+  const { user, mustChangePassword } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
+  if (mustChangePassword) return <Navigate to="/change-password" replace />;
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     if (user.role === 'customer') return <Navigate to="/customer" replace />;
     if (user.role === 'agent') return <Navigate to="/agent" replace />;
@@ -50,6 +52,7 @@ export default function App() {
             {/* Auth */}
             <Route element={<AuthLayout />}>
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/change-password" element={<ChangePasswordPage />} />
             </Route>
 
             {/* Customer */}
