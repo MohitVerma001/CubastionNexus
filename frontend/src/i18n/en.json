@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "tickets": "Tickets",
+    "newTicket": "New Ticket",
+    "logout": "Log Out",
+    "profile": "Profile",
+    "support": "Support"
+  },
+  "ticket": {
+    "status": {
+      "open": "Open",
+      "in_progress": "In Progress",
+      "pending_customer": "Pending Customer",
+      "closed": "Closed",
+      "escalated": "Escalated"
+    },
+    "priority": {
+      "P1": "Critical",
+      "P2": "High",
+      "P3": "Normal"
+    },
+    "category": {
+      "system_issue": "System Issue",
+      "functional_issue": "Functional Issue",
+      "data_issue": "Data Issue",
+      "user_management": "User Management",
+      "enhancement": "Enhancement Request",
+      "other": "Other"
+    },
+    "fields": {
+      "subject": "Subject",
+      "description": "Description",
+      "category": "Category",
+      "priority": "Priority",
+      "attachments": "Attachments",
+      "submittedBy": "Submitted By",
+      "submittedAt": "Submitted At",
+      "lastUpdated": "Last Updated",
+      "assignedTo": "Assigned To",
+      "ticketId": "Ticket ID",
+      "status": "Status",
+      "organisation": "Organisation"
+    },
+    "actions": {
+      "submit": "Submit",
+      "escalate": "Escalate to Urgent",
+      "addComment": "Add Comment",
+      "close": "Close Ticket",
+      "reopen": "Reopen Ticket",
+      "cancel": "Cancel",
+      "download": "Download",
+      "upload": "Upload"
+    },
+    "messages": {
+      "escalateConfirm": "Are you sure you want to escalate this ticket to urgent?",
+      "escalateWarning": "This will change the priority to P1 (Critical) and alert all agents immediately.",
+      "closeConfirm": "Are you sure you want to close this ticket?",
+      "reopenConfirm": "Are you sure you want to reopen this ticket?",
+      "submitSuccess": "Your ticket has been submitted successfully.",
+      "commentSuccess": "Your comment has been added."
+    },
+    "placeholders": {
+      "commentInput": "Write a comment…",
+      "subjectInput": "Enter a subject for your issue",
+      "descriptionInput": "Please describe your issue in detail"
+    },
+    "empty": {
+      "noTickets": "No tickets found",
+      "noTicketsDescription": "You have no tickets yet. Create a new ticket to get started.",
+      "noComments": "No comments yet"
+    }
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "email": "Email Address",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "changePassword": "Change Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "currentPassword": "Current Password",
+    "updatePassword": "Update Password",
+    "signingIn": "Signing in…",
+    "welcomeBack": "Welcome Back",
+    "signInSubtitle": "Sign in to your Cubastion Nexus account"
+  },
+  "errors": {
+    "required": "This field is required",
+    "emailFormat": "Please enter a valid email address",
+    "passwordLength": "Password must be at least 8 characters",
+    "passwordStrength": "Password must contain letters, numbers, and symbols",
+    "passwordMatch": "Passwords do not match",
+    "generic": "An error occurred. Please try again later.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "unauthorized": "You do not have permission to perform this action"
+  }
+}

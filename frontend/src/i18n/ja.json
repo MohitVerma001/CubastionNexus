@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "tickets": "チケット一覧",
+    "newTicket": "新規チケット",
+    "logout": "ログアウト",
+    "profile": "プロフィール",
+    "support": "サポート"
+  },
+  "ticket": {
+    "status": {
+      "open": "未対応",
+      "in_progress": "対応中",
+      "pending_customer": "お客様確認待ち",
+      "closed": "完了",
+      "escalated": "緊急対応"
+    },
+    "priority": {
+      "P1": "緊急",
+      "P2": "高",
+      "P3": "通常"
+    },
+    "category": {
+      "system_issue": "システム障害",
+      "functional_issue": "機能不具合",
+      "data_issue": "データ問題",
+      "user_management": "ユーザー管理",
+      "enhancement": "機能改善要望",
+      "other": "その他"
+    },
+    "fields": {
+      "subject": "件名",
+      "description": "内容",
+      "category": "カテゴリー",
+      "priority": "優先度",
+      "attachments": "添付ファイル",
+      "submittedBy": "申請者",
+      "submittedAt": "申請日時（JST）",
+      "lastUpdated": "最終更新日時（JST）",
+      "assignedTo": "担当者",
+      "ticketId": "チケットID",
+      "status": "ステータス",
+      "organisation": "組織"
+    },
+    "actions": {
+      "submit": "送信する",
+      "escalate": "緊急対応に切り替える",
+      "addComment": "コメントを追加する",
+      "close": "チケットを完了にする",
+      "reopen": "チケットを再開する",
+      "cancel": "キャンセル",
+      "download": "ダウンロード",
+      "upload": "アップロード"
+    },
+    "messages": {
+      "escalateConfirm": "このチケットを緊急対応に切り替えますか？",
+      "escalateWarning": "優先度がP1（緊急）に変更され、すべての担当者に即時通知されます。",
+      "closeConfirm": "このチケットを完了にしてよろしいですか？",
+      "reopenConfirm": "このチケットを再開してよろしいですか？",
+      "submitSuccess": "チケットが正常に送信されました。",
+      "commentSuccess": "コメントが追加されました。"
+    },
+    "placeholders": {
+      "commentInput": "コメントを入力してください…",
+      "subjectInput": "問題の件名を入力してください",
+      "descriptionInput": "問題の詳細を具体的にご記入ください"
+    },
+    "empty": {
+      "noTickets": "チケットがありません",
+      "noTicketsDescription": "現在、表示できるチケットがありません。新規チケットを作成してください。",
+      "noComments": "コメントはまだありません"
+    }
+  },
+  "auth": {
+    "signIn": "ログイン",
+    "signOut": "ログアウト",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "forgotPassword": "パスワードをお忘れの方",
+    "changePassword": "パスワード変更",
+    "newPassword": "新しいパスワード",
+    "confirmPassword": "パスワード（確認）",
+    "currentPassword": "現在のパスワード",
+    "updatePassword": "パスワードを更新する",
+    "signingIn": "ログイン中…",
+    "welcomeBack": "おかえりなさいませ",
+    "signInSubtitle": "Cubastion Nexus にログインしてください"
+  },
+  "errors": {
+    "required": "この項目は必須です",
+    "emailFormat": "有効なメールアドレスを入力してください",
+    "passwordLength": "パスワードは8文字以上で入力してください",
+    "passwordStrength": "パスワードは英字・数字・記号を含む必要があります",
+    "passwordMatch": "パスワードが一致しません",
+    "generic": "エラーが発生しました。しばらくしてから再度お試しください。",
+    "sessionExpired": "セッションの有効期限が切れました。再度ログインしてください。",
+    "unauthorized": "この操作を行う権限がありません"
+  }
+}
