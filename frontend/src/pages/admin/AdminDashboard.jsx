@@ -1,38 +1,39 @@
 import { Ticket, Building2, Users, TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, TrendingUp } from 'lucide-react';
-import { MOCK_TICKETS, MOCK_ORGANISATIONS, MOCK_USERS } from '../../utils/mockData';
 import { getSLAStatus } from '../../utils/dateUtils';
+import useAdminStats from '../../hooks/useAdminStats';
 import PageHeader from '../../components/shared/PageHeader';
 import StatCard from '../../components/shared/StatCard';
 import StatusBadge from '../../components/shared/StatusBadge';
 import PriorityBadge from '../../components/shared/PriorityBadge';
+import LoadingSpinner from '../../components/shared/LoadingSpinner';
 import { formatRelative } from '../../utils/dateUtils';
 
 export default function AdminDashboard() {
-  const tickets = MOCK_TICKETS;
+  const { stats: rawStats, loading } = useAdminStats();
 
   const stats = {
-    total: tickets.length,
-    open: tickets.filter(t => t.status === 'open').length,
-    escalated: tickets.filter(t => t.status === 'escalated').length,
-    slaRisk: tickets.filter(t => {
-      const s = getSLAStatus(t.sla_resolution_due, t.sla_paused_at);
-      return s === 'breached' || s === 'critical';
-    }).length,
-    resolved: tickets.filter(t => t.status === 'closed').length,
-    orgs: MOCK_ORGANISATIONS.filter(o => o.is_active).length,
-    agents: MOCK_USERS.filter(u => u.role === 'agent').length,
+    total: rawStats?.total ?? 0,
+    open: rawStats?.open ?? 0,
+    escalated: rawStats?.escalated ?? 0,
+    slaRisk: rawStats?.sla_breach_count ?? 0,
+    resolved: rawStats?.resolved ?? 0,
+    orgs: rawStats?.organisations ?? 0,
+    agents: rawStats?.agents ?? 0,
+    unassigned: rawStats?.unassigned ?? 0,
+    pending: rawStats?.pending_customer ?? 0,
   };
 
-  const recentTickets = tickets.slice(0, 5);
-  const slaRiskTickets = tickets.filter(t => {
-    const s = getSLAStatus(t.sla_resolution_due, t.sla_paused_at);
-    return s === 'breached' || s === 'critical' || s === 'warning';
-  });
+  const recentTickets = rawStats?.recent_tickets ?? [];
+  const slaRiskTickets = rawStats?.sla_watchlist ?? [];
+  const orgStats = rawStats?.org_ticket_load ?? [];
 
-  const orgStats = MOCK_ORGANISATIONS.slice(0, 5).map(org => ({
-    ...org,
-    open: tickets.filter(t => t.organisation?.name === org.name && t.status !== 'closed').length,
-  }));
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <LoadingSpinner size="lg" label="Loading dashboard..." />
+      </div>
+    );
+  }
 
   return (
     <div>

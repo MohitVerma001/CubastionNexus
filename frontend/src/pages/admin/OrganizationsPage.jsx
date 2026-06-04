@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Plus, Pencil, Building2 } from 'lucide-react';
-import { MOCK_ORGANISATIONS } from '../../utils/mockData';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createOrganisation, updateOrganisation } from '../../services/organisations.service';
+import useOrganisations from '../../hooks/useOrganisations';
+import { useToast } from '../../context/ToastContext';
 import PageHeader from '../../components/shared/PageHeader';
 import DataTable from '../../components/shared/DataTable';
 import Modal from '../../components/shared/Modal';
@@ -8,12 +11,12 @@ import Button from '../../components/shared/Button';
 import SearchFilterBar from '../../components/shared/SearchFilterBar';
 import { formatDate } from '../../utils/dateUtils';
 
-function OrgForm({ org, onClose, onSave }) {
+function OrgForm({ org, onClose, onSave, loading }) {
   const [form, setForm] = useState(org || { name: '', primary_contact: '', email: '', is_active: true });
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   return (
-    <form onSubmit={e => { e.preventDefault(); onSave(form); onClose(); }} className="space-y-4">
+    <form onSubmit={e => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-[#0F0F0F] mb-1.5">Organization Name <span className="text-[#C81E1E]">*</span></label>
         <input value={form.name} onChange={e => set('name', e.target.value)} required placeholder="e.g. Fujikura Ltd."
@@ -45,21 +48,55 @@ function OrgForm({ org, onClose, onSave }) {
       </div>
       <div className="flex justify-end gap-3 pt-2">
         <Button variant="secondary" type="button" onClick={onClose}>Cancel</Button>
-        <Button type="submit">{org ? 'Save Changes' : 'Create Organization'}</Button>
+        <Button type="submit" loading={loading}>{org ? 'Save Changes' : 'Create Organization'}</Button>
       </div>
     </form>
   );
 }
 
 export default function OrganizationsPage() {
-  const [orgs, setOrgs] = useState(MOCK_ORGANISATIONS);
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+  const { organisations, loading } = useOrganisations();
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingOrg, setEditingOrg] = useState(null);
 
-  const filtered = orgs.filter(o =>
+  const onSuccess = (message) => {
+    queryClient.invalidateQueries({ queryKey: ['organisations'] });
+    addToast(message, 'success');
+    setShowModal(false);
+  };
+
+  const onError = (err) => {
+    addToast(err?.response?.data?.message || 'An error occurred. Please try again.', 'error');
+  };
+
+  const createMutation = useMutation({
+    mutationFn: createOrganisation,
+    onSuccess: () => onSuccess('Organization created successfully.'),
+    onError,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }) => updateOrganisation(id, data),
+    onSuccess: () => onSuccess('Organization updated successfully.'),
+    onError,
+  });
+
+  const handleSave = (data) => {
+    if (editingOrg) {
+      updateMutation.mutate({ id: editingOrg.id, data });
+    } else {
+      createMutation.mutate(data);
+    }
+  };
+
+  const filtered = organisations.filter(o =>
     !search || o.name.toLowerCase().includes(search.toLowerCase()) || o.primary_contact?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const isSaving = createMutation.isPending || updateMutation.isPending;
 
   const columns = [
     {
@@ -138,17 +175,15 @@ export default function OrganizationsPage() {
         <div className="px-4 py-4 border-b border-[#E8EAED]">
           <SearchFilterBar value={search} onChange={setSearch} placeholder="Search organizations..." />
         </div>
-        <DataTable columns={columns} data={filtered} emptyTitle="No organizations" emptyDescription="Add your first client organization to get started." />
+        <DataTable columns={columns} data={filtered} loading={loading} emptyTitle="No organizations" emptyDescription="Add your first client organization to get started." />
       </div>
 
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editingOrg ? 'Edit Organization' : 'Add Organization'} size="md">
         <OrgForm
           org={editingOrg}
           onClose={() => setShowModal(false)}
-          onSave={data => {
-            if (editingOrg) setOrgs(prev => prev.map(o => o.id === editingOrg.id ? { ...o, ...data } : o));
-            else setOrgs(prev => [...prev, { ...data, id: `org-${Date.now()}`, ticket_count: 0, open_count: 0 }]);
-          }}
+          onSave={handleSave}
+          loading={isSaving}
         />
       </Modal>
     </div>
