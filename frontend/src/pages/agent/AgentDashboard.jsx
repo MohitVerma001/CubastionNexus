@@ -1,8 +1,8 @@
 import { Ticket, TriangleAlert as AlertTriangle, UserX, Clock, Plus, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { MOCK_TICKETS } from '../../utils/mockData';
 import { useAuth } from '../../context/AuthContext';
 import { getSLAStatus } from '../../utils/dateUtils';
+import useTickets from '../../hooks/useTickets';
 import PageHeader from '../../components/shared/PageHeader';
 import StatCard from '../../components/shared/StatCard';
 import TicketTable from '../../components/tickets/TicketTable';
@@ -11,7 +11,7 @@ import Button from '../../components/shared/Button';
 export default function AgentDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const tickets = MOCK_TICKETS;
+  const { tickets, loading, refetch } = useTickets();
 
   const stats = {
     open: tickets.filter(t => t.status === 'open').length,
@@ -32,7 +32,7 @@ export default function AgentDashboard() {
         breadcrumbs={['Agent Portal', 'Dashboard']}
         action={
           <div className="flex items-center gap-2">
-            <Button variant="secondary" icon={RefreshCw} size="sm">Refresh</Button>
+            <Button variant="secondary" icon={RefreshCw} size="sm" onClick={refetch}>Refresh</Button>
             <Button icon={Plus} onClick={() => navigate('/agent/tickets/new')}>
               Create Ticket
             </Button>
@@ -48,7 +48,7 @@ export default function AgentDashboard() {
         <StatCard label="Escalated" value={stats.escalated} icon={AlertTriangle} variant="danger" />
       </div>
 
-      <TicketTable tickets={tickets} loading={false} showOrg={true} basePath="/agent/tickets" />
+      <TicketTable tickets={tickets} loading={loading} showOrg={true} basePath="/agent/tickets" />
     </div>
   );
 }
