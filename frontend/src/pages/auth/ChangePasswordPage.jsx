@@ -35,9 +35,9 @@ export default function ChangePasswordPage() {
     try {
       await changePassword(data.currentPassword, data.newPassword);
       markPasswordChanged();
-      if (user?.role === 'customer') navigate('/customer');
-      else if (user?.role === 'admin') navigate('/admin');
-      else navigate('/agent');
+      if (user.role === 'customer') navigate('/customer');
+      else if (user.role === 'agent') navigate('/agent');
+      else navigate('/admin');
     } catch (err) {
       setServerError(err?.message || 'Failed to update password. Please try again.');
     } finally {

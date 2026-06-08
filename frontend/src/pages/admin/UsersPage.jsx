@@ -1,7 +1,9 @@
-import { useState } from 'react';
-import { Plus, Pencil, Trash2, RefreshCw, KeyRound } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Pencil, Trash2, RefreshCw, KeyRound, Info } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createUser, updateUser, deactivateUser, resetUserPassword } from '../../services/users.service';
+import { getOrganisations } from '../../services/organisations.service';
+import useDepartments from '../../hooks/useDepartments';
 import useUsers from '../../hooks/useUsers';
 import { useToast } from '../../context/ToastContext';
 import PageHeader from '../../components/shared/PageHeader';
@@ -20,8 +22,24 @@ const ROLE_STYLES = {
 };
 
 function UserForm({ user, onClose, onSave, loading }) {
-  const [form, setForm] = useState(user || { name: '', email: '', role: 'customer', organisation: '', is_active: true });
+  const [form, setForm] = useState(
+    user
+      ? {
+          ...user,
+          organisation_id: user.organisation_id || user.organisation?.id || '',
+          department_id:   user.department_id   || user.department?.id   || '',
+        }
+      : { name: '', email: '', role: 'customer', organisation_id: '', is_active: true, department_id: '' }
+  );
+  const [organisations, setOrganisations] = useState([]);
+  const { departments, loading: deptsLoading } = useDepartments();
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  useEffect(() => {
+    getOrganisations()
+      .then(data => setOrganisations(data.organisations || data || []))
+      .catch(() => setOrganisations([]));
+  }, []);
 
   return (
     <form onSubmit={e => { e.preventDefault(); onSave(form); }} className="space-y-4">
@@ -37,6 +55,19 @@ function UserForm({ user, onClose, onSave, loading }) {
             className="w-full px-3.5 py-2.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white" />
         </div>
       </div>
+      {!user && (
+        <div className="px-4 py-3 bg-[#EBF5FA] border border-[#D3ECFB] rounded-lg flex items-start gap-2">
+          <Info className="w-4 h-4 text-[#01516A] mt-0.5 shrink-0" />
+          <div>
+            <p className="text-sm font-medium text-[#01516A]">Auto-generated password</p>
+            <p className="text-xs text-[#609CB8] mt-0.5">
+              A secure temporary password will be automatically generated
+              and sent to the user's email address. They will be required
+              to change it on first login.
+            </p>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-[#0F0F0F] mb-1.5">Role</label>
@@ -59,9 +90,37 @@ function UserForm({ user, onClose, onSave, loading }) {
       {form.role === 'customer' && (
         <div>
           <label className="block text-sm font-medium text-[#0F0F0F] mb-1.5">Organization</label>
-          <input value={form.organisation?.name || ''} onChange={e => set('organisation', { name: e.target.value })}
-            placeholder="Organization name"
-            className="w-full px-3.5 py-2.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white" />
+          <select value={form.organisation_id || ''} onChange={e => set('organisation_id', e.target.value)}
+            className="w-full px-3.5 py-2.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white">
+            <option value="">Select organisation</option>
+            {organisations.map(org => (
+              <option key={org.id} value={org.id}>{org.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
+      {form.role === 'agent' && (
+        <div>
+          <label className="block text-sm font-medium text-[#0F0F0F] mb-1.5">Department</label>
+          <select
+            value={form.department_id || ''}
+            onChange={e => set('department_id', e.target.value)}
+            disabled={deptsLoading}
+            className="w-full px-3.5 py-2.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <option value="">
+              {deptsLoading ? 'Loading departments...' : 'Select department'}
+            </option>
+            {departments.map(d => (
+              <option key={d.id} value={d.id}>{d.name}</option>
+            ))}
+          </select>
+          <p className="text-xs text-[#999] mt-1">Assign this agent to a support department.</p>
+          {!deptsLoading && departments.length === 0 && (
+            <p className="text-xs text-[#DC9117] mt-1">
+              No departments found. Create departments in Admin → Departments first.
+            </p>
+          )}
         </div>
       )}
       <div className="flex justify-end gap-3 pt-2">
@@ -76,6 +135,7 @@ export default function UsersPage() {
   const queryClient = useQueryClient();
   const { addToast } = useToast();
   const { users, loading, refetch } = useUsers();
+  const { departments } = useDepartments();
   const [search, setSearch] = useState('');
   const [filterValues, setFilterValues] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -128,13 +188,45 @@ export default function UsersPage() {
     }
   };
 
+  const FILTERS = [
+    {
+      key: 'role',
+      label: 'All Roles',
+      options: [
+        { value: 'customer', label: 'Customer' },
+        { value: 'agent', label: 'Agent' },
+        { value: 'admin', label: 'Admin' },
+      ],
+    },
+    {
+      key: 'department_id',
+      label: 'All Departments',
+      options: departments.map(d => ({ value: d.id, label: d.name })),
+    },
+    {
+      key: 'is_active',
+      label: 'All Statuses',
+      options: [
+        { value: 'true', label: 'Active' },
+        { value: 'false', label: 'Inactive' },
+      ],
+    },
+  ];
+
   const filtered = users.filter(u => {
-    if (search && !u.name.toLowerCase().includes(search.toLowerCase()) && !u.email.toLowerCase().includes(search.toLowerCase())) return false;
+    if (search &&
+      !u.name.toLowerCase().includes(search.toLowerCase()) &&
+      !u.email.toLowerCase().includes(search.toLowerCase())
+    ) return false;
     if (filterValues.role && u.role !== filterValues.role) return false;
+    if (filterValues.department_id &&
+      (u.department?.id || u.department_id) !== filterValues.department_id
+    ) return false;
+    if (filterValues.is_active !== undefined && filterValues.is_active !== '' &&
+      String(u.is_active) !== filterValues.is_active
+    ) return false;
     return true;
   });
-
-  const FILTERS = [{ key: 'role', label: 'Role', options: [{ value: 'customer', label: 'Customer' }, { value: 'agent', label: 'Agent' }, { value: 'admin', label: 'Admin' }] }];
 
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
@@ -163,8 +255,23 @@ export default function UsersPage() {
     {
       key: 'organisation',
       label: 'Organization',
-      width: '180px',
+      width: '160px',
       render: v => <span className="text-sm text-[#5C5C5C]">{v?.name || <span className="text-[#999] italic">Cubastion</span>}</span>,
+    },
+    {
+      key: 'department',
+      label: 'Department',
+      width: '160px',
+      render: (v, row) => (
+        <span className="text-sm text-[#5C5C5C]">
+          {v?.name
+            ? v.name
+            : row.role === 'agent'
+              ? <span className="text-[#999] italic">No dept.</span>
+              : <span className="text-[#999]">—</span>
+          }
+        </span>
+      ),
     },
     {
       key: 'is_active',
@@ -188,7 +295,16 @@ export default function UsersPage() {
       width: '120px',
       render: (_, row) => (
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={e => { e.stopPropagation(); setEditingUser(row); setShowModal(true); }}
+          <button
+            onClick={e => {
+              e.stopPropagation();
+              setEditingUser({
+                ...row,
+                department_id:   row.department?.id   || row.department_id   || '',
+                organisation_id: row.organisation?.id || row.organisation_id || '',
+              });
+              setShowModal(true);
+            }}
             className="p-1.5 rounded-lg hover:bg-[#EBF5FA] text-[#609CB8] transition-colors" title="Edit">
             <Pencil className="w-3.5 h-3.5" />
           </button>

@@ -12,7 +12,7 @@ import SearchFilterBar from '../../components/shared/SearchFilterBar';
 import { formatDate } from '../../utils/dateUtils';
 
 function OrgForm({ org, onClose, onSave, loading }) {
-  const [form, setForm] = useState(org || { name: '', primary_contact: '', email: '', is_active: true });
+  const [form, setForm] = useState(org || { name: '', primary_contact: '', inbound_email: '', is_active: true });
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   return (
@@ -29,9 +29,10 @@ function OrgForm({ org, onClose, onSave, loading }) {
             className="w-full px-3.5 py-2.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white" />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#0F0F0F] mb-1.5">Support Email</label>
-          <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="support@company.co.jp"
+          <label className="block text-sm font-medium text-[#0F0F0F] mb-1.5">Inbound Email Address</label>
+          <input type="email" value={form.inbound_email || ''} onChange={e => set('inbound_email', e.target.value)} placeholder="support.company@cubastion.com"
             className="w-full px-3.5 py-2.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white" />
+          <p className="text-xs text-[#999] mt-1">Emails sent to this address will automatically create support tickets for this organisation.</p>
         </div>
       </div>
       <div>
@@ -117,8 +118,8 @@ export default function OrganizationsPage() {
       render: v => <span className="text-sm text-[#5C5C5C]">{v || '—'}</span>,
     },
     {
-      key: 'email',
-      label: 'Support Email',
+      key: 'inbound_email',
+      label: 'Inbound Email',
       render: v => <span className="text-sm text-[#5C5C5C]">{v || '—'}</span>,
     },
     {
@@ -128,7 +129,7 @@ export default function OrganizationsPage() {
       render: v => <span className="text-sm font-medium text-[#0F0F0F]">{v}</span>,
     },
     {
-      key: 'open_count',
+      key: 'open',
       label: 'Open',
       width: '80px',
       render: v => <span className={`text-sm font-semibold ${v > 3 ? 'text-[#C81E1E]' : 'text-[#0F0F0F]'}`}>{v}</span>,

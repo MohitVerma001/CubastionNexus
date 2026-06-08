@@ -1,20 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, Bell, Menu, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import UserAvatar from '../components/shared/UserAvatar';
 import { useNavigate } from 'react-router-dom';
+import useNotifications from '../hooks/useNotifications';
+import { formatRelative } from '../utils/dateUtils';
 
-export default function Header({ onMobileMenuOpen, sidebarCollapsed = false, notificationCount = 3 }) {
+export default function Header({ onMobileMenuOpen, sidebarCollapsed = false }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef(null);
 
-  const NOTIFICATIONS = [
-    { id: 1, text: 'CUB-00142 has been escalated to P1', time: '5m ago', unread: true },
-    { id: 2, text: 'New reply on CUB-00138 from Tanaka', time: '1h ago', unread: true },
-    { id: 3, text: 'SLA breach warning: CUB-00135', time: '2h ago', unread: false },
-  ];
+  const { notifications, unreadCount, markAllRead } = useNotifications();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notificationRef.current && !notificationRef.current.contains(e.target)) {
+        setShowNotifications(false);
+      }
+    };
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotifications]);
 
   return (
     <header className={`fixed top-0 right-0 left-0 z-20 h-14 bg-white border-b border-[#E8EAED] flex items-center px-4 gap-4 transition-all duration-200 ${sidebarCollapsed ? 'lg:left-16' : 'lg:left-56'}`}>
@@ -37,15 +48,15 @@ export default function Header({ onMobileMenuOpen, sidebarCollapsed = false, not
 
       <div className="ml-auto flex items-center gap-2">
         {/* Notifications */}
-        <div className="relative">
+        <div className="relative" ref={notificationRef}>
           <button
             onClick={() => { setShowNotifications(!showNotifications); setShowProfile(false); }}
             className="relative p-2 rounded-lg hover:bg-[#EBEBEB] text-[#707070] hover:text-[#0F0F0F] transition-colors"
           >
             <Bell className="w-5 h-5" />
-            {notificationCount > 0 && (
+            {unreadCount > 0 && (
               <span className="absolute top-1 right-1 w-4 h-4 bg-[#DC9117] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
-                {notificationCount}
+                {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
           </button>
@@ -54,21 +65,39 @@ export default function Header({ onMobileMenuOpen, sidebarCollapsed = false, not
             <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl border border-[#E8EAED] shadow-xl z-50 overflow-hidden">
               <div className="px-4 py-3 border-b border-[#E8EAED] flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-[#0F0F0F]">Notifications</h3>
-                <button className="text-xs text-[#01516A] hover:underline">Mark all read</button>
+                <button onClick={() => markAllRead()} className="text-xs text-[#01516A] hover:underline">Mark all read</button>
               </div>
               <div className="divide-y divide-[#F0F1F3] max-h-72 overflow-y-auto">
-                {NOTIFICATIONS.map(n => (
-                  <div key={n.id} className={`px-4 py-3 hover:bg-[#F5F8FA] cursor-pointer transition-colors ${n.unread ? 'bg-[#EBF5FA]/40' : ''}`}>
-                    <div className="flex items-start gap-2">
-                      {n.unread && <span className="w-1.5 h-1.5 rounded-full bg-[#01516A] mt-1.5 shrink-0" />}
-                      {!n.unread && <span className="w-1.5 h-1.5 shrink-0" />}
-                      <div>
-                        <p className="text-xs text-[#0F0F0F] leading-snug">{n.text}</p>
-                        <p className="text-xs text-[#999] mt-0.5">{n.time}</p>
+                {notifications.length === 0 ? (
+                  <p className="text-sm text-[#999] text-center py-6">No notifications yet</p>
+                ) : (
+                  notifications.map(n => (
+                    <div
+                      key={n.id}
+                      onClick={() => {
+                        const path = user?.role === 'customer'
+                          ? `/customer/tickets/${n.ticket_id}`
+                          : `/agent/tickets/${n.ticket_id}`;
+                        navigate(path);
+                        setShowNotifications(false);
+                      }}
+                      className={`px-4 py-3 hover:bg-[#F5F8FA] cursor-pointer transition-colors ${!n.read_at ? 'bg-[#EBF5FA]/40' : ''}`}
+                    >
+                      <div className="flex items-start gap-2">
+                        {!n.read_at
+                          ? <span className="w-1.5 h-1.5 rounded-full bg-[#01516A] mt-1.5 shrink-0" />
+                          : <span className="w-1.5 h-1.5 shrink-0" />
+                        }
+                        <div>
+                          <p className="text-xs text-[#0F0F0F] leading-snug">
+                            {n.ticket_number ? `${n.ticket_number}: ${n.ticket_subject}` : n.type}
+                          </p>
+                          <p className="text-xs text-[#999] mt-0.5">{formatRelative(n.sent_at)}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
               <div className="px-4 py-2.5 border-t border-[#E8EAED]">
                 <button className="text-xs text-[#01516A] hover:underline w-full text-center">View all notifications</button>

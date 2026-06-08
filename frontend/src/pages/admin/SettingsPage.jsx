@@ -1,5 +1,9 @@
-import PageHeader from '../../components/shared/PageHeader';
+import { useState } from 'react';
 import { Settings, Bell, Mail, Shield, Globe } from 'lucide-react';
+import useOrganisations from '../../hooks/useOrganisations';
+import { updateOrganisation } from '../../services/organisations.service';
+import { useToast } from '../../context/ToastContext';
+import PageHeader from '../../components/shared/PageHeader';
 
 const SECTIONS = [
   {
@@ -35,6 +39,93 @@ const SECTIONS = [
   },
 ];
 
+function EmailRoutingSection() {
+  const { organisations, loading, refetch } = useOrganisations();
+  const [editingId, setEditingId] = useState(null);
+  const [editEmail, setEditEmail] = useState('');
+  const { addToast } = useToast();
+
+  const handleSave = async (orgId) => {
+    try {
+      await updateOrganisation(orgId, { inbound_email: editEmail });
+      setEditingId(null);
+      refetch();
+      addToast('Email routing updated.', 'success');
+    } catch {
+      addToast('Failed to update email routing.', 'error');
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-xl border border-[#E8EAED] overflow-hidden"
+      style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E8EAED]">
+        <div className="w-8 h-8 rounded-lg bg-[#EBF5FA] flex items-center justify-center">
+          <Mail className="w-4 h-4 text-[#01516A]" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-[#0F0F0F]">Email Routing</p>
+          <p className="text-xs text-[#707070]">
+            Map inbound email addresses to organisations.
+            Emails sent to these addresses create tickets automatically.
+          </p>
+        </div>
+      </div>
+      <div className="divide-y divide-[#F0F1F3]">
+        {loading ? (
+          <div className="px-5 py-8 text-center text-sm text-[#999]">
+            Loading organisations...
+          </div>
+        ) : organisations.map(org => (
+          <div key={org.id}
+            className="flex items-center justify-between px-5 py-3.5 gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-[#0F0F0F]">{org.name}</p>
+              {editingId === org.id ? (
+                <input
+                  value={editEmail}
+                  onChange={e => setEditEmail(e.target.value)}
+                  placeholder="support.company@cubastion.com"
+                  className="mt-1 w-full px-3 py-1.5 text-sm border border-[#E0E2E6] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#01516A]/20 focus:border-[#01516A] bg-white"
+                />
+              ) : (
+                <p className="text-xs text-[#609CB8] mt-0.5">
+                  {org.inbound_email || <span className="text-[#999] italic">No email configured</span>}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {editingId === org.id ? (
+                <>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="text-xs text-[#707070] px-3 py-1.5 border border-[#E0E2E6] rounded-lg hover:bg-[#F5F5F5]">
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => handleSave(org.id)}
+                    className="text-xs text-white bg-[#01516A] hover:bg-[#0E465E] px-3 py-1.5 rounded-lg">
+                    Save
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    setEditingId(org.id);
+                    setEditEmail(org.inbound_email || '');
+                  }}
+                  className="text-xs text-[#01516A] px-3 py-1.5 border border-[#D3ECFB] bg-[#EBF5FA] rounded-lg hover:bg-[#D3ECFB]">
+                  Edit
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   return (
     <div className="max-w-2xl">
@@ -45,6 +136,8 @@ export default function SettingsPage() {
       />
 
       <div className="space-y-4">
+        <EmailRoutingSection />
+
         {SECTIONS.map(section => {
           const Icon = section.icon;
           return (

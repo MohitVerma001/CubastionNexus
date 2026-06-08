@@ -23,23 +23,62 @@ const FILTERS = [
   ]},
 ];
 
-export default function TicketTable({ tickets, loading, showOrg = true, basePath = '/agent/tickets' }) {
+export default function TicketTable({
+  tickets,
+  loading,
+  showOrg = true,
+  basePath = '/agent/tickets',
+  hideInternalFilters = false,
+  selectedTickets = [],
+  onSelectionChange = null,
+}) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState({});
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 
-  const filtered = tickets.filter(t => {
-    if (search && !t.subject.toLowerCase().includes(search.toLowerCase()) && !t.ticket_number.toLowerCase().includes(search.toLowerCase())) return false;
-    if (filters.status && t.status !== filters.status) return false;
-    if (filters.priority && t.priority !== filters.priority) return false;
-    return true;
-  });
+  const filtered = hideInternalFilters
+    ? tickets
+    : tickets.filter(t => {
+        if (search && !t.subject.toLowerCase().includes(search.toLowerCase()) && !t.ticket_number.toLowerCase().includes(search.toLowerCase())) return false;
+        if (filters.status && t.status !== filters.status) return false;
+        if (filters.priority && t.priority !== filters.priority) return false;
+        return true;
+      });
 
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const columns = [
+  const checkboxColumn = onSelectionChange ? [{
+    key: 'id',
+    label: (
+      <input
+        type="checkbox"
+        checked={selectedTickets.length === paged.length && paged.length > 0}
+        onChange={(e) => {
+          if (e.target.checked) onSelectionChange(paged.map(t => t.id));
+          else onSelectionChange([]);
+        }}
+        className="w-4 h-4 accent-[#01516A]"
+      />
+    ),
+    width: '44px',
+    render: (v) => (
+      <input
+        type="checkbox"
+        checked={selectedTickets.includes(v)}
+        onChange={(e) => {
+          e.stopPropagation();
+          if (e.target.checked) onSelectionChange([...selectedTickets, v]);
+          else onSelectionChange(selectedTickets.filter(id => id !== v));
+        }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-4 h-4 accent-[#01516A]"
+      />
+    ),
+  }] : [];
+
+  const dataColumns = [
     {
       key: 'ticket_number',
       label: '#',
@@ -93,18 +132,22 @@ export default function TicketTable({ tickets, loading, showOrg = true, basePath
     },
   ];
 
+  const columns = [...checkboxColumn, ...dataColumns];
+
   return (
     <div className="bg-white rounded-xl border border-[#E8EAED] overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-      <div className="px-4 py-4 border-b border-[#E8EAED]">
-        <SearchFilterBar
-          value={search}
-          onChange={v => { setSearch(v); setPage(1); }}
-          placeholder="Search tickets..."
-          filters={FILTERS}
-          onFilterChange={(k, v) => { setFilters(prev => ({ ...prev, [k]: v })); setPage(1); }}
-          filterValues={filters}
-        />
-      </div>
+      {!hideInternalFilters && (
+        <div className="px-4 py-4 border-b border-[#E8EAED]">
+          <SearchFilterBar
+            value={search}
+            onChange={v => { setSearch(v); setPage(1); }}
+            placeholder="Search tickets..."
+            filters={FILTERS}
+            onFilterChange={(k, v) => { setFilters(prev => ({ ...prev, [k]: v })); setPage(1); }}
+            filterValues={filters}
+          />
+        </div>
+      )}
       <DataTable
         columns={columns}
         data={paged}

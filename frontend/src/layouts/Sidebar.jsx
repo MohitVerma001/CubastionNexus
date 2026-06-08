@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Ticket, Building2, Users, Shield,
+  LayoutDashboard, Ticket, Building2, Users, Users2, Shield,
   FileText, Settings, LogOut, ChevronLeft, ChevronRight, Menu
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -9,14 +9,13 @@ import UserAvatar from '../components/shared/UserAvatar';
 const AGENT_NAV = [
   { to: '/agent', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/agent/tickets', icon: Ticket, label: 'All Tickets' },
-  { to: '/agent/organizations', icon: Building2, label: 'Organizations' },
-  { to: '/agent/users', icon: Users, label: 'Users' },
 ];
 
 const ADMIN_NAV = [
   { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
   { to: '/admin/tickets', icon: Ticket, label: 'Tickets' },
   { to: '/admin/organizations', icon: Building2, label: 'Organizations' },
+  { to: '/admin/departments', icon: Users2, label: 'Departments' },
   { to: '/admin/users', icon: Users, label: 'Users' },
   { to: '/admin/sla', icon: Shield, label: 'SLA Config' },
   { to: '/admin/audit', icon: FileText, label: 'Audit Logs' },

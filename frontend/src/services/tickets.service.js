@@ -31,3 +31,6 @@ export const uploadAttachment = (ticketId, file) => {
 
 export const getAttachments = (ticketId) =>
   api.get(`/tickets/${ticketId}/attachments`);
+
+export const bulkUpdateTickets = (ticketIds, action, value) =>
+  api.post('/tickets/bulk', { ticketIds, action, value });

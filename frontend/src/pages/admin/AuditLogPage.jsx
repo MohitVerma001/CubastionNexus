@@ -33,7 +33,7 @@ export default function AuditLogPage() {
     keepPreviousData: true,
   });
 
-  const logs = data?.logs ?? data?.items ?? (Array.isArray(data) ? data : []);
+  const logs = data?.logs ?? data?.data ?? [];
   const total = data?.total ?? logs.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const currentPage = filters.page ?? 1;

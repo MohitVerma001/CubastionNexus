@@ -1,4 +1,5 @@
-import { Ticket, TriangleAlert as AlertTriangle, UserX, Clock, Plus, RefreshCw } from 'lucide-react';
+import { useState } from 'react';
+import { Ticket, TriangleAlert as AlertTriangle, UserX, Clock, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getSLAStatus } from '../../utils/dateUtils';
@@ -12,16 +13,17 @@ export default function AgentDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { tickets, loading, refetch } = useTickets();
+  const [refreshing, setRefreshing] = useState(false);
 
   const stats = {
-    open: tickets.filter(t => t.status === 'open').length,
-    p1Risk: tickets.filter(t => {
+    open:      tickets.filter(t => t.status === 'open').length,
+    p1Risk:    tickets.filter(t => {
       const s = getSLAStatus(t.sla_resolution_due, t.sla_paused_at);
       return s === 'breached' || s === 'critical';
     }).length,
     unassigned: tickets.filter(t => !t.assigned_to && t.status !== 'closed').length,
-    pending: tickets.filter(t => t.status === 'pending_customer').length,
-    escalated: tickets.filter(t => t.status === 'escalated').length,
+    pending:    tickets.filter(t => t.status === 'pending_customer').length,
+    escalated:  tickets.filter(t => t.status === 'escalated').length,
   };
 
   return (
@@ -32,9 +34,21 @@ export default function AgentDashboard() {
         breadcrumbs={['Agent Portal', 'Dashboard']}
         action={
           <div className="flex items-center gap-2">
-            <Button variant="secondary" icon={RefreshCw} size="sm" onClick={refetch}>Refresh</Button>
-            <Button icon={Plus} onClick={() => navigate('/agent/tickets/new')}>
-              Create Ticket
+            <Button
+              variant="secondary"
+              icon={RefreshCw}
+              size="sm"
+              loading={refreshing}
+              onClick={async () => {
+                setRefreshing(true);
+                await refetch();
+                setRefreshing(false);
+              }}
+            >
+              Refresh
+            </Button>
+            <Button icon={Ticket} onClick={() => navigate('/agent/tickets')}>
+              All Tickets
             </Button>
           </div>
         }

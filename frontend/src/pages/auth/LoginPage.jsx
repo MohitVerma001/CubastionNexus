@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
+// Demo credentials that match the seed data
+const DEMO = {
+  customer: { email: 'tanaka@fujikura.co.jp', password: 'TempPass@123' },
+  agent:    { email: 'agent@cubastion.com',   password: 'TempPass@123' },
+  admin:    { email: 'admin@cubastion.com',   password: 'TempPass@123' },
+};
+
 export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -15,23 +22,24 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) { setError('Please enter your email and password.'); return; }
-    setLoading(true); setError('');
-    await new Promise(r => setTimeout(r, 700));
-    const result = login(email, password);
-    setLoading(false);
-    if (result.role === 'customer') navigate('/customer');
-    else if (result.role === 'admin') navigate('/admin');
-    else navigate('/agent');
+    setLoading(true);
+    setError('');
+    try {
+      const response = await login(email, password);
+      const role = response?.user?.role;
+      if (role === 'customer') navigate('/customer');
+      else if (role === 'admin') navigate('/admin');
+      else navigate('/agent');
+    } catch (err) {
+      setError(err?.message || 'Invalid email or password.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fillDemo = (role) => {
-    const demos = {
-      customer: 'tanaka@fujikura.co.jp',
-      agent: 'yamamoto@cubastion.com',
-      admin: 'admin@cubastion.com',
-    };
-    setEmail(demos[role]);
-    setPassword('password');
+    setEmail(DEMO[role].email);
+    setPassword(DEMO[role].password);
   };
 
   return (
@@ -103,8 +111,8 @@ export default function LoginPage() {
         <div className="grid grid-cols-3 gap-2">
           {[
             { role: 'customer', label: 'Customer', color: 'bg-[#EBF5FA] text-[#01516A] hover:bg-[#D3ECFB]' },
-            { role: 'agent', label: 'Agent', color: 'bg-[#F5F5F5] text-[#5C5C5C] hover:bg-[#EBEBEB]' },
-            { role: 'admin', label: 'Admin', color: 'bg-[#FFF0D1] text-[#7A500F] hover:bg-[#FFE3AB]' },
+            { role: 'agent',    label: 'Agent',    color: 'bg-[#F5F5F5] text-[#5C5C5C] hover:bg-[#EBEBEB]' },
+            { role: 'admin',    label: 'Admin',    color: 'bg-[#FFF0D1] text-[#7A500F] hover:bg-[#FFE3AB]' },
           ].map(d => (
             <button
               key={d.role}

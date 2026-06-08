@@ -37,10 +37,28 @@ export function getSLAStatus(dueAt, pausedAt) {
   if (pausedAt) return 'paused';
   const now = new Date();
   const due = new Date(dueAt);
-  const diff = due - now;
-  const hours = diff / 3600000;
-  if (hours < 0) return 'breached';
-  if (hours < 4) return 'critical';
-  if (hours < 8) return 'warning';
+  const diffHours = (due - now) / 3600000;
+  if (diffHours < 0) return 'breached';
+  if (diffHours < 4) return 'critical';
+  if (diffHours < 16) return 'warning';
   return 'normal';
+}
+
+export function getTimeRemaining(dueAt) {
+  if (!dueAt) return null;
+  const now = new Date();
+  const due = new Date(dueAt);
+  const diffMs = due - now;
+  if (diffMs < 0) {
+    const hours = Math.abs(Math.floor(diffMs / 3600000));
+    if (hours < 24) return `${hours}h overdue`;
+    return `${Math.floor(hours / 24)}d overdue`;
+  }
+  const hours = Math.floor(diffMs / 3600000);
+  if (hours < 1) return `${Math.floor(diffMs / 60000)}m left`;
+  if (hours < 24) return `${hours}h left`;
+  const days = Math.floor(hours / 24);
+  const remainHours = hours % 24;
+  if (remainHours === 0) return `${days}d left`;
+  return `${days}d ${remainHours}h left`;
 }

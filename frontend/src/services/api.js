@@ -22,7 +22,7 @@ const api = axios.create({
   },
 });
 
-// Request interceptor: attach JWT token
+// Request interceptor: attach JWT token if available in memory
 api.interceptors.request.use((config) => {
   if (memoryToken) {
     config.headers.Authorization = `Bearer ${memoryToken}`;
@@ -30,13 +30,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor: handle success and errors
+// Auth pages where a 401 should NOT trigger a redirect (avoids infinite loop)
+const AUTH_PATHS = ['/login', '/forgot-password', '/reset-password', '/change-password'];
+const isAuthPage = () => AUTH_PATHS.some((p) => window.location.pathname.startsWith(p));
+
+// Response interceptor: unwrap data, handle global 401
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
     if (error.response?.status === 401) {
       clearMemoryToken();
-      window.location.href = '/login';
+      // Only hard-redirect when we're NOT already on an auth page —
+      // prevents infinite reload loops when /auth/me fails on the login page.
+      if (!isAuthPage()) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error.response?.data || error.message);
   }

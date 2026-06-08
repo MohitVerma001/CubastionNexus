@@ -8,6 +8,8 @@ export default function useTickets(initialFilters = {}) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['tickets', filters],
     queryFn: () => getTickets(filters),
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
   });
 
   const updateFilter = (key, value) =>

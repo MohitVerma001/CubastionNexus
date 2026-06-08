@@ -7,8 +7,9 @@ export default function EscalateButton({ ticketId, currentPriority, status, onSu
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [escalated, setEscalated] = useState(false);
 
-  if (status === 'closed' || currentPriority === 'P1') return null;
+  if (status === 'closed' || currentPriority === 'P1' || escalated) return null;
 
   const handleOpen = () => {
     setError('');
@@ -26,6 +27,7 @@ export default function EscalateButton({ ticketId, currentPriority, status, onSu
     setError('');
     try {
       await escalateTicket(ticketId);
+      setEscalated(true);
       setOpen(false);
       onSuccess();
     } catch (err) {

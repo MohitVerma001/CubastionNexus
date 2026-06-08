@@ -16,9 +16,10 @@ export function AuthProvider({ children }) {
         const response = await api.get('/auth/me');
         setUser(response.user);
         setMemoryToken(response.token);
-        if (!response.user.password_changed_at) {
-          setMustChangePassword(true);
-        }
+        setMustChangePassword(
+          response.user.password_changed_at === null ||
+          response.user.password_changed_at === undefined
+        );
       } catch (err) {
         setUser(null);
       } finally {
@@ -32,9 +33,7 @@ export function AuthProvider({ children }) {
     const response = await api.post('/auth/login', { email, password });
     setMemoryToken(response.token);
     setUser(response.user);
-    if (!response.user.password_changed_at) {
-      setMustChangePassword(true);
-    }
+    setMustChangePassword(!!response.mustChangePassword);
     return response;
   };
 
