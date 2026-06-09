@@ -1,4 +1,4 @@
-import { Ticket, Clock, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Plus } from 'lucide-react';
+import { Ticket, Clock, CircleCheck as CheckCircle, TriangleAlert as AlertTriangle, Plus, Building2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import useTickets from '../../hooks/useTickets';
@@ -23,7 +23,9 @@ export default function CustomerDashboard() {
     <div>
       <PageHeader
         title="My Tickets"
-        subtitle={`${user?.organisation?.name} — Support Portal`}
+        subtitle={user?.organisation?.name
+          ? `${user.organisation.name} — Support Portal`
+          : 'Support Portal'}
         breadcrumbs={['Portal', 'Tickets']}
         action={
           <Button icon={Plus} onClick={() => navigate('/customer/new')}>
@@ -40,9 +42,27 @@ export default function CustomerDashboard() {
       </div>
 
       {error ? (
-        <div className="px-4 py-3 bg-[#FDE8E8] border border-[#F8AEAE] rounded-lg text-sm text-[#C81E1E]">
-          Failed to load tickets. Please refresh the page.
-        </div>
+        user?.organisation_id
+          ? (
+            <div className="px-4 py-3 bg-[#FDE8E8] border border-[#F8AEAE] rounded-lg text-sm text-[#C81E1E]">
+              Failed to load tickets. Please refresh the page.
+            </div>
+          )
+          : (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 rounded-full bg-[#EBF5FA] flex items-center justify-center mb-4 mx-auto">
+                <Building2 className="w-8 h-8 text-[#01516A]" />
+              </div>
+              <h2 className="text-lg font-semibold text-[#0F0F0F] mb-2">
+                No Organisation Assigned
+              </h2>
+              <p className="text-sm text-[#707070] max-w-sm">
+                Your account is not associated with an organisation.
+                Please contact your administrator to get access.
+              </p>
+              <p className="text-xs text-[#999] mt-2">{user?.email}</p>
+            </div>
+          )
       ) : (
         <TicketTable tickets={tickets} loading={loading} showOrg={false} basePath="/customer/tickets" />
       )}

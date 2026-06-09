@@ -25,10 +25,13 @@ const getOrganisations = async (userId, role) => {
 };
 
 const createOrganisation = async (data) => {
+  const inbound_email = data.inbound_email && data.inbound_email.trim() !== ''
+    ? data.inbound_email.trim()
+    : null;
   const result = await query(
     `INSERT INTO organisations (name, inbound_email, primary_contact)
      VALUES ($1, $2, $3) RETURNING *`,
-    [data.name, data.inbound_email || null, data.primary_contact || null]
+    [data.name, inbound_email, data.primary_contact || null]
   );
   return result.rows[0];
 };

@@ -88,8 +88,13 @@ const createUser = async (data, createdBy, tenantId) => {
       chars[Math.floor(Math.random() * chars.length)]
     ).join('');
   const hash = await bcrypt.hash(plainPassword, 12);
-  const orgId = data.organisation_id || tenantId;
-  const deptId = (data.role === 'agent' && data.department_id) ? data.department_id : null;
+  const deptId = (data.role === 'agent' && data.department_id &&
+    data.department_id.trim() !== '')
+    ? data.department_id
+    : null;
+  const orgId = (data.organisation_id && data.organisation_id.trim() !== '')
+    ? data.organisation_id
+    : (tenantId || null);
 
   const result = await query(
     `INSERT INTO users (email, name, role, organisation_id, department_id, password_hash, is_active)

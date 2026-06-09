@@ -15,7 +15,7 @@ export const getMemoryToken = () => {
 };
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || window.__ENV?.VITE_API_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

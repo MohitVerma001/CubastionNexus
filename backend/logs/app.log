@@ -1199,3 +1199,126 @@
 {"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-08 16:45:00"}
 {"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-08 17:00:00"}
 {"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-08 17:15:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-08 17:30:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-08 17:45:00"}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 18:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 18:00:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 18:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 18:15:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 18:30:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 18:30:00","warnings":1}
+{"bodyKeys":["from","subject","text"],"from":"varun.ahuja@cubastion.com","hasHtml":false,"hasText":true,"level":"info","message":"Inbound email webhook received","subject":"Test ticket","timestamp":"2026-06-08 18:32:21"}
+{"level":"info","message":"Inbound email: new ticket created","subject":"Test ticket","timestamp":"2026-06-08 18:32:21","userId":"c1ffd873-908e-491b-b0ca-c75321579a82"}
+{"level":"info","message":"Email sent","subject":"[CUB-00008] チケットを受け付けました","timestamp":"2026-06-08 18:32:23","to":"varun.ahuja@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00008: Test ticket - Fusion","timestamp":"2026-06-08 18:32:23","to":"mv23898@gmail.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00008: Test ticket - Fusion","timestamp":"2026-06-08 18:32:23","to":"sheetal.gupta@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00008: Test ticket - Fusion","timestamp":"2026-06-08 18:32:24","to":"admin@cubastion.com"}
+{"level":"info","message":"Database connection verified","timestamp":"2026-06-08 18:37:26"}
+{"level":"info","message":"SLA check job started (every 15 minutes)","timestamp":"2026-06-08 18:37:26"}
+{"level":"info","message":"Server running on http://localhost:3001 [development]","timestamp":"2026-06-08 18:37:26"}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 18:37:26"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 18:37:26","warnings":1}
+{"database":"nexusDev","host":"localhost","level":"info","message":"Database connection established","timestamp":"2026-06-08 18:37:26"}
+{"bodyKeys":["from","subject","text"],"from":"diksha.sharma@cubastion.com","hasHtml":false,"hasText":true,"level":"info","message":"Inbound email webhook received","subject":"Test ticket","timestamp":"2026-06-08 18:40:43"}
+{"level":"info","message":"Inbound email: new ticket created","subject":"Test ticket","timestamp":"2026-06-08 18:40:43","userId":"67c86d25-7b56-419e-8658-1dcabc73a70b"}
+{"level":"info","message":"Email sent","subject":"[CUB-00009] チケットを受け付けました","timestamp":"2026-06-08 18:40:45","to":"diksha.sharma@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00009: Test ticket - Fusion","timestamp":"2026-06-08 18:40:45","to":"mv23898@gmail.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00009: Test ticket - Fusion","timestamp":"2026-06-08 18:40:45","to":"sheetal.gupta@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00009: Test ticket - Fusion","timestamp":"2026-06-08 18:40:45","to":"admin@cubastion.com"}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 18:45:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 18:45:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 19:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 19:00:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 19:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 19:15:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 19:30:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 19:30:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 19:45:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 19:45:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 20:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 20:00:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 20:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 20:15:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 20:30:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 20:30:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 20:45:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 20:45:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 21:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 21:00:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 21:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 21:15:00","warnings":1}
+{"bodyKeys":["sender_ip","SPF","to","subject","envelope","email","dkim","from","charsets"],"from":"Diksha Sharma <diksha.sharma@Cubastion.com>","hasHtml":false,"hasText":false,"level":"info","message":"Inbound email webhook received","subject":"Test Ticket Creation","timestamp":"2026-06-08 21:26:28","to":"\"support@support.cubastion.com\" <support@support.cubastion.com>"}
+{"level":"info","message":"Inbound email: new ticket created","subject":"Test Ticket Creation","timestamp":"2026-06-08 21:26:28","userId":"67c86d25-7b56-419e-8658-1dcabc73a70b"}
+{"level":"info","message":"Email sent","subject":"[CUB-00010] チケットを受け付けました","timestamp":"2026-06-08 21:26:29","to":"diksha.sharma@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00010: Test Ticket Creation - Fusion","timestamp":"2026-06-08 21:26:30","to":"mv23898@gmail.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00010: Test Ticket Creation - Fusion","timestamp":"2026-06-08 21:26:30","to":"sheetal.gupta@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00010: Test Ticket Creation - Fusion","timestamp":"2026-06-08 21:26:30","to":"admin@cubastion.com"}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 21:30:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 21:30:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 21:45:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 21:45:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 22:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 22:00:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 22:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 22:15:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 22:30:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 22:30:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-08 22:45:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-08 22:45:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 09:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 09:00:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 09:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 09:15:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 10:45:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 10:45:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 11:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 11:00:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 11:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 11:15:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 11:30:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 11:30:00","warnings":1}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 11:45:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 11:45:00","warnings":1}
+{"bodyKeys":["sender_ip","SPF","to","from","email","charsets","dkim","subject","envelope"],"from":"Diksha Sharma <diksha.sharma@Cubastion.com>","hasHtml":false,"hasText":false,"level":"info","message":"Inbound email webhook received","subject":"fusion intranet profile issue","timestamp":"2026-06-09 11:50:43","to":"\"support@support.cubastion.com\" <support@support.cubastion.com>"}
+{"level":"info","message":"Inbound email: new ticket created","subject":"fusion intranet profile issue","timestamp":"2026-06-09 11:50:44","userId":"67c86d25-7b56-419e-8658-1dcabc73a70b"}
+{"level":"info","message":"Email sent","subject":"[CUB-00011] チケットを受け付けました","timestamp":"2026-06-09 11:50:45","to":"diksha.sharma@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00011: fusion intranet profile issue - Fusion","timestamp":"2026-06-09 11:50:45","to":"mv23898@gmail.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00011: fusion intranet profile issue - Fusion","timestamp":"2026-06-09 11:50:45","to":"sheetal.gupta@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00011: fusion intranet profile issue - Fusion","timestamp":"2026-06-09 11:50:46","to":"admin@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"Ticket Assigned to You: CUB-00011","timestamp":"2026-06-09 11:58:05","to":"mv23898@gmail.com"}
+{"level":"info","message":"Email sent","subject":"Ticket Assigned to You: CUB-00011","timestamp":"2026-06-09 11:58:08","to":"sheetal.gupta@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"Ticket Assigned to You: CUB-00011","timestamp":"2026-06-09 11:58:11","to":"mv23898@gmail.com"}
+{"bodyKeys":["to","from","subject","charsets","dkim","envelope","email","sender_ip","SPF"],"from":"Diksha Sharma <diksha.sharma@Cubastion.com>","hasHtml":false,"hasText":false,"level":"info","message":"Inbound email webhook received","subject":"Re: fusion intranet profile issue","timestamp":"2026-06-09 11:58:48","to":"\"support@support.cubastion.com\" <support@support.cubastion.com>"}
+{"level":"info","message":"Inbound email: new ticket created","subject":"fusion intranet profile issue","timestamp":"2026-06-09 11:58:48","userId":"67c86d25-7b56-419e-8658-1dcabc73a70b"}
+{"level":"info","message":"Email sent","subject":"[CUB-00012] チケットを受け付けました","timestamp":"2026-06-09 11:58:49","to":"diksha.sharma@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00012: fusion intranet profile issue - Fusion","timestamp":"2026-06-09 11:58:49","to":"sheetal.gupta@cubastion.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00012: fusion intranet profile issue - Fusion","timestamp":"2026-06-09 11:58:49","to":"mv23898@gmail.com"}
+{"level":"info","message":"Email sent","subject":"[NEW] CUB-00012: fusion intranet profile issue - Fusion","timestamp":"2026-06-09 11:58:49","to":"admin@cubastion.com"}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 12:00:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":0,"timestamp":"2026-06-09 12:00:00","warnings":1}
+{"level":"warn","message":"SLA response breached: 1 ticket(s)","timestamp":"2026-06-09 12:15:00"}
+{"level":"warn","message":"SLA warning (<20% window remaining): 1 ticket(s)","timestamp":"2026-06-09 12:15:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":0,"responseBreached":1,"timestamp":"2026-06-09 12:15:00","warnings":1}
+{"level":"warn","message":"SLA response breached: 3 ticket(s)","timestamp":"2026-06-09 12:30:00"}
+{"level":"warn","message":"SLA resolution breached: 1 ticket(s)","timestamp":"2026-06-09 12:30:00"}
+{"level":"info","message":"SLA check complete","resolutionBreached":1,"responseBreached":3,"timestamp":"2026-06-09 12:30:00","warnings":0}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 12:45:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 13:00:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 13:15:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 13:30:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 13:45:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 14:00:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 14:15:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 14:30:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 14:45:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 15:00:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 15:15:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 15:30:00"}
+{"bodyKeys":["email","dkim","sender_ip","charsets","SPF","to","from","subject","envelope"],"from":"\"Verma, Mohit (575) (EXT) [FUSO]\" <cubastion.v.verma@archion-group.com>","hasHtml":false,"hasText":false,"level":"info","message":"Inbound email webhook received","subject":"Ticket Email Ingestion Testing","timestamp":"2026-06-09 15:41:27","to":"\"support@support.cubastion.com\" <support@support.cubastion.com>"}
+{"email":"cubastion.v.verma@archion-group.com","level":"warn","message":"Inbound email: unknown sender","timestamp":"2026-06-09 15:41:27"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 15:45:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 16:00:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 16:15:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 16:30:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 16:45:00"}
+{"level":"info","message":"SLA check: no breaches or warnings","timestamp":"2026-06-09 17:00:00"}
